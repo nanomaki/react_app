@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="background-image ">
+        <!--Navbar-->
+        <div class="">
+                <div class="container-fluid">
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav" style="display: flex; justify-content: flex-end;">
+                    <li class="nav-item">
+                    </li>
+                    <li class="nav-item">
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"></a>
+                    </li>
+                    </ul>
+                </div>
+                </div>
+            </nav>
+        </div>
+        <!--Navbar-->
+        <!--Modal New Note-->
+        <div class="container-md-12  m-3 ">
+          <div class="row">
+            <div class="col-6 d-flex justify-content-end">
+              <button id="AddNote" class="bg-warning btn-lg"><i class="bi bi-plus-circle"></i> Add Messge</button>
+            </div>
+     
+            <div class="col d-flex justify-content-end">
+            </div>
+          </div>
+            
+
+        <!--CARD-->
+        <div class="mt-3 ml-3">   
+            <div id="cardContainer" class="card-container">
+              <!-- Card elements will be dynamically generated here -->
+            </div>
+        </div>       
+        <!--CARD-->
+        
+                <div id="myModal" class="modal">
+                <div class="modal-content ">
+                    <span class="close">&times;</span>
+                    <div class="d-flex justify-content-center">
+                      <form class="newnote" method="post" id="formnote">
+                        <input type="text" name="title" id="title" placeholder="Title..."  class="mb-3"><br>
+                        <textarea name="note" id="note" placeholder="Put Your message..." required rows="6" cols="50" class="mb-3"></textarea><br>
+                        <input type="color" id="colorPicker" list="lightColors" value="#FFA07A">
+                        <datalist id="lightColors">
+                          <option value="#87CEEB">Light Blue</option>
+                          <option value="#FFC0CB">Light Pink</option>
+                          <option value="#FFA07A">Light Salmon</option>
+                          <option value="#FFD700">Light Yellow</option>
+                          <option value="#90EE90">Light Green</option>
+                          <option value="#FFB6C1">Light Pink</option>
+                          <option value="#E6E6FA">Lavender</option>
+                        </datalist> <br><br>
+                        <button type="submit" id="addnotebtn" name="submit" onclick="add">Add Note</button><br>
+                        <br><p class="text-center"><i>Note: Refresh the page after adding note!</i></p>  
+                      </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+        <!--Modal New Note-->
+    </div>
+
+    
+
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-database.js"></script>
+    <script src="index.js"></script>
+</body>
+
+<style>
+
+
+body {
+  background-image: linear-gradient(to bottom, purple , white ,pink );
+  /*font-family: Serif, serif;*/
+}
+
+.background-image 
+    {
+        background-image: url('./img/bg.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        height: 100vh;
+    }
+
+img {
+  width: 150px;
+  height: auto;
+}
+
+nav {
+    background-color: white;
+    border-radius: 50px;
+    box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.2);
+}
+
+ul .navbar-nav {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-link {
+  transition: transform 0.3s;
+}
+
+.nav-link:hover {
+  transform: scale(1.2);
+}
+
+.modal {
+  display: none; /* Hide the modal by default */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #fffbfb;
+  width: 50%;
+}
+form .newnote{
+  width: 80%;
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+  
+}
+
+
+.close {
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
+}
+
+.card {
+  
+  border-radius: 5px;
+  padding: 20px;
+  max-width: 20%;
+  min-width: 15%;
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.card-text {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+</style>
+
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
+  import { getDatabase, ref, set, get, child } 
+  from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCtMEdX5OotGlmuC9B0QO1jMqj0T0chCmY",
+    authDomain: "my-app-79d61.firebaseapp.com",
+    databaseURL: "https://my-app-79d61-default-rtdb.firebaseio.com",
+    projectId: "my-app-79d61",
+    storageBucket: "my-app-79d61.appspot.com",
+    messagingSenderId: "1006411927866",
+    appId: "1:1006411927866:web:810c92e059b0a3dc41c003"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+
+  // Get a reference to the database service
+  const db = getDatabase(app);
+
+//--------FETCH DATA AND POST AS A CARD----------------//
+const notesRef = ref(db, 'notes');
+
+get(notesRef).then((snapshot) => {
+  if (snapshot.exists()) {
+    const notesData = snapshot.val();
+
+    // Iterate over the fetched data and generate card components
+    Object.keys(notesData).forEach((noteId) => {
+      const note = notesData[noteId];
+
+      // Create card element
+      const card = document.createElement('div');
+      card.classList.add('card');
+      card.id = noteId; // Set the id of the card element as the noteId
+
+      // Set background color of the card
+      card.style.backgroundColor = note.color;
+
+      // Create card content
+      const cardTitle = document.createElement('h5');
+      cardTitle.classList.add('card-title');
+      cardTitle.textContent = note.title;
+
+      const cardId = document.createElement('h6');
+      cardId.classList.add('card-text');
+      cardId.textContent = "#" + note.Noteid;
+
+      const cardText = document.createElement('p');
+      cardText.classList.add('card-text');
+      cardText.textContent = note.note;
+     
+      // Create edit button
+      const editButton = document.createElement('button');
+      editButton.classList.add('edit-button', 'bg-success');
+      editButton.textContent = 'Edit  ';
+
+      // Create pencil icon element
+      const pencilIcon = document.createElement('i');
+      pencilIcon.classList.add('bi', 'bi-pencil');
+
+      // Append the pencil icon to the edit button
+      editButton.appendChild(pencilIcon);
+
+      // Add event listener to the edit button
+      editButton.addEventListener('click', () => openEditModal(noteId, note.title, note.note, note.color));
+
+      // Create delete button
+    const deleteButton = document.createElement('button');
+    deleteButton.classList.add('delete-button', 'bg-danger');
+    deleteButton.textContent = 'Delete ';
+    
+
+    // Create trash icon element
+    const trashIcon = document.createElement('i');
+    trashIcon.classList.add('bi', 'bi-trash');
+    
+
+    // Append the trash icon to the delete button
+    deleteButton.appendChild(trashIcon);
+
+    // Add event listener to the delete button
+    deleteButton.addEventListener('click', () => deleteNoteFromDatabase(noteId));
+
+
+
+      // Append content to the card
+      card.appendChild(cardTitle);
+      card.appendChild(cardId);
+      card.appendChild(cardText);
+      card.appendChild(deleteButton);
+      card.appendChild(editButton);
+      
+
+      // Append the card to a container element
+      const container = document.getElementById('cardContainer');
+      container.appendChild(card);
+    });
+  } else {
+    console.log('No notes available');
+  }
+}).catch((error) => {
+  console.error(error);
+});
+
+//----------ADD NOTE----------//
+  document.getElementById('formnote').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const Noteid=Math.random().toString(36).slice(2, 7);
+    set(ref(db, 'notes/' + Noteid ), {
+        Noteid: Noteid,  
+        title: document.getElementById('title').value,
+        note: document.getElementById('note').value,
+        color: document.getElementById('colorPicker').value,
+      }).then(() => {
+    alert('Note updated successfully!');
+    const modal = document.getElementById('myModal');
+    modal.style.display = 'none';
+    location.reload(); // Refresh the page to display the updated note
+  }).catch((error) => {
+    console.error(error);
+    alert('Failed to update the note. Please try again.');
+  });
+ 
+    alert('NoteID is '+ Noteid + '. Refresh the page and look your noteID on the search bar.');
+    document.getElementById('formnote').reset();
+
+  
+  });
+
+  /*document.getElementById('colorPicker').addEventListener('input', function(event) {
+  const color = event.target.value;
+  const cards = document.getElementsByClassName('card');
+
+  for (let i = 0; i < cards.length; i++) {
+    cards[i].style.backgroundColor = color;
+  }
+});*/
+
+//-----------EDIT/UPDATE NOTE-----------//
+function openEditModal(noteId, title, note, color) {
+  const modal = document.getElementById('myModal');
+  const titleInput = document.getElementById('title');
+  const noteInput = document.getElementById('note');
+  const colorPicker = document.getElementById('colorPicker');
+  const addNoteBtn = document.getElementById('addnotebtn');
+
+  // Set the values of input fields and color picker
+  titleInput.value = title;
+  noteInput.value = note;
+  colorPicker.value = color;
+
+  // Change the submit button text and onclick function
+  addNoteBtn.textContent = 'Update Note';
+  addNoteBtn.onclick = () => updateNote(noteId);
+
+  // Display the modal
+  modal.style.display = 'block';
+}
+
+function updateNote(noteId) {
+  const titleInput = document.getElementById('title');
+  const noteInput = document.getElementById('note');
+  const colorPicker = document.getElementById('colorPicker');
+  const noteRef = ref(db, 'notes/' + noteId);
+
+  set(noteRef, {
+    Noteid: noteId,
+    title: titleInput.value,
+    note: noteInput.value,
+    color: colorPicker.value,
+  }).then(() => {
+    alert('Note updated successfully!');
+    const modal = document.getElementById('myModal');
+    modal.style.display = 'none';
+    location.reload(); // Refresh the page to display the updated note
+  }).catch((error) => {
+    console.error(error);
+    alert('Failed to update the note. Please try again.');
+  });
+}
+
+//-----------DELETE NOTE-----------//
+function deleteNoteFromDatabase(noteId) {
+      const noteRef = ref(db, 'notes/' + noteId);
+      set(noteRef, null)
+        .then(() => {
+          // Remove the card from the DOM
+          const cardElement = document.getElementById(noteId);
+          cardElement.remove();
+          console.log('Note deleted successfully!');
+        })
+        .catch((error) => {
+          console.error('Failed to delete note:', error);
+        });
+    }
+
+
+//-----------------SEARCH FUNCTION--------------------//
+document.getElementById('formnote').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const searchQuery = document.getElementById('search').value;
+
+  get(notesRef).then((snapshot) => {
+    if (snapshot.exists()) {
+      const notesData = snapshot.val();
+
+      // Clear the container before displaying search results
+      const container = document.getElementById('cardContainer');
+      container.innerHTML = '';
+
+     // Iterate over the fetched data and generate card components
+      Object.keys(notesData).forEach((noteId) => {
+      const note = notesData[noteId];
+
+      // Create card element
+      const card = document.createElement('div');
+      card.classList.add('card');
+      card.id = noteId; // Set the id of the card element as the noteId
+
+      // Set background color of the card
+      card.style.backgroundColor = note.color;
+
+      // Create card content
+      const cardTitle = document.createElement('h5');
+      cardTitle.classList.add('card-title');
+      cardTitle.textContent = note.title;
+
+      const cardId = document.createElement('h6');
+      cardId.classList.add('card-text');
+      cardId.textContent = "#" + note.Noteid;
+
+      const cardText = document.createElement('p');
+      cardText.classList.add('card-text');
+      cardText.textContent = note.note;
+
+      // Create delete button
+      const deleteButton = document.createElement('button');
+      deleteButton.textContent = 'Delete';
+      deleteButton.classList.add('delete-button');
+      deleteButton.addEventListener('click', () => deleteNoteFromDatabase(noteId));
+
+      // Append content to the card
+      card.appendChild(cardTitle);
+      card.appendChild(cardId);
+      card.appendChild(cardText);
+      card.appendChild(deleteButton);
+
+      // Append the card to a container element
+      const container = document.getElementById('cardContainer');
+      container.appendChild(card);
+    });
+
+      if (container.children.length === 0) {
+        console.log('No matching notes found');
+      }
+    } else {
+      console.log('No notes available');
+    }
+  }).catch((error) => {
+    console.error(error);
+  });
+
+  document.getElementById('formnote').reset();
+});
+
+  
+  </script>
+
+<script>
+
+  //--------------------MODAL-----------------------------//
+  const AddNoteBtn = document.getElementById('AddNote');
+  const modal = document.getElementById('myModal');
+  const closeModalBtn = document.getElementsByClassName('close')[0];
+
+  AddNoteBtn.addEventListener('click', function() {
+    modal.style.display = 'block';
+  });
+
+  closeModalBtn.addEventListener('click', function() {
+    modal.style.display = 'none';
+  });
+
+  window.addEventListener('click', function(event) {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+
+</script>
+</html>
